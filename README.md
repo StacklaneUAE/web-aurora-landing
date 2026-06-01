@@ -3,7 +3,7 @@
 A responsive, single-page marketing site for a fictional focus-timer product. Built to demonstrate clean front-end work: distinctive typography, smooth load animations, and a fully responsive layout — no frameworks, no build step.
 
 ## 🔗 Live Demo
-> Deploy this folder to Netlify or Vercel (drag-and-drop) and paste the link here.
+> https://lumen-stacklane.netlify.app
 
 ## ✨ Features
 - Fully responsive (mobile → desktop)
