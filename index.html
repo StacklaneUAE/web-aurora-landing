@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lumen — Focus timer for deep work</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#0f0e0c;
+    --surface:#1a1815;
+    --ink:#f4efe6;
+    --muted:#a39c8e;
+    --accent:#ff6b35;
+    --accent-soft:#ffd9c2;
+    --line:rgba(244,239,230,.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Spline Sans Mono',monospace;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  .grain{
+    position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.04;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .wrap{max-width:1100px;margin:0 auto;padding:0 28px;position:relative;z-index:2}
+
+  nav{display:flex;justify-content:space-between;align-items:center;padding:32px 0}
+  .logo{font-family:'Fraunces',serif;font-weight:900;font-size:1.4rem;letter-spacing:-.02em}
+  .logo span{color:var(--accent)}
+  .nav-cta{
+    border:1px solid var(--line);color:var(--ink);text-decoration:none;
+    padding:10px 20px;border-radius:100px;font-size:.85rem;transition:.3s;
+  }
+  .nav-cta:hover{background:var(--ink);color:var(--bg)}
+
+  header{padding:80px 0 60px;position:relative}
+  .eyebrow{
+    color:var(--accent);font-size:.8rem;letter-spacing:.25em;text-transform:uppercase;
+    display:inline-block;margin-bottom:24px;opacity:0;animation:rise .8s .1s forwards;
+  }
+  h1{
+    font-family:'Fraunces',serif;font-weight:900;
+    font-size:clamp(2.8rem,8vw,5.5rem);line-height:.98;letter-spacing:-.03em;
+    margin-bottom:28px;opacity:0;animation:rise .8s .25s forwards;
+  }
+  h1 em{font-style:italic;color:var(--accent)}
+  .lede{
+    max-width:520px;color:var(--muted);font-size:1.05rem;margin-bottom:40px;
+    opacity:0;animation:rise .8s .4s forwards;
+  }
+  .cta-row{display:flex;gap:16px;flex-wrap:wrap;opacity:0;animation:rise .8s .55s forwards}
+  .btn{
+    text-decoration:none;padding:16px 32px;border-radius:100px;font-size:.95rem;
+    font-weight:500;transition:.3s;display:inline-block;
+  }
+  .btn-primary{background:var(--accent);color:#1a1008}
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(255,107,53,.3)}
+  .btn-ghost{color:var(--ink);border:1px solid var(--line)}
+  .btn-ghost:hover{border-color:var(--ink)}
+
+  .orb{
+    position:absolute;top:10%;right:-120px;width:420px;height:420px;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%,var(--accent),transparent 70%);
+    filter:blur(20px);opacity:.5;z-index:1;animation:float 8s ease-in-out infinite;
+  }
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-30px)}}
+
+  .stats{display:flex;gap:48px;flex-wrap:wrap;padding:60px 0;border-top:1px solid var(--line);margin-top:60px}
+  .stat .num{font-family:'Fraunces',serif;font-size:2.6rem;font-weight:600;color:var(--accent)}
+  .stat .lbl{color:var(--muted);font-size:.85rem}
+
+  section{padding:90px 0}
+  .sec-title{font-family:'Fraunces',serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:600;letter-spacing:-.02em;margin-bottom:16px;max-width:600px}
+  .sec-sub{color:var(--muted);max-width:480px;margin-bottom:56px}
+
+  .features{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px}
+  .card{
+    background:var(--surface);border:1px solid var(--line);border-radius:18px;
+    padding:36px 32px;transition:.4s;
+  }
+  .card:hover{transform:translateY(-6px);border-color:var(--accent)}
+  .card .ico{font-size:1.8rem;margin-bottom:20px}
+  .card h3{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:600;margin-bottom:12px}
+  .card p{color:var(--muted);font-size:.92rem}
+
+  .cta-band{
+    background:var(--accent);color:#1a1008;border-radius:28px;padding:72px 48px;text-align:center;margin:40px 0 90px;
+  }
+  .cta-band h2{font-family:'Fraunces',serif;font-size:clamp(2rem,5vw,3rem);font-weight:900;margin-bottom:20px;letter-spacing:-.02em}
+  .cta-band .btn-dark{background:#1a1008;color:var(--accent-soft)}
+  .cta-band .btn-dark:hover{transform:translateY(-3px)}
+
+  footer{border-top:1px solid var(--line);padding:40px 0;display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;color:var(--muted);font-size:.85rem}
+  footer a{color:var(--muted)}
+
+  @keyframes rise{to{opacity:1;transform:translateY(0)}}
+  .eyebrow,h1,.lede,.cta-row{transform:translateY(20px)}
+
+  @media(max-width:640px){.orb{display:none}nav{padding:24px 0}}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div class="wrap">
+  <nav>
+    <div class="logo">Lu<span>men</span></div>
+    <a href="#start" class="nav-cta">Try free</a>
+  </nav>
+
+  <header>
+    <div class="orb"></div>
+    <span class="eyebrow">Deep work, measured</span>
+    <h1>Focus that<br><em>actually</em> sticks.</h1>
+    <p class="lede">Lumen is a quiet focus timer that learns your rhythm, blocks the noise, and shows you exactly where your hours went — no streaks, no guilt, just clarity.</p>
+    <div class="cta-row">
+      <a href="#start" class="btn btn-primary">Start focusing →</a>
+      <a href="#how" class="btn btn-ghost">See how it works</a>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="num">2.4h</div><div class="lbl">avg. focus gained / day</div></div>
+      <div class="stat"><div class="num">11k+</div><div class="lbl">sessions logged weekly</div></div>
+      <div class="stat"><div class="num">4.9★</div><div class="lbl">average user rating</div></div>
+    </div>
+  </header>
+
+  <section id="how">
+    <h2 class="sec-title">Built for the way focus really works.</h2>
+    <p class="sec-sub">Three small ideas that quietly change how a workday feels.</p>
+    <div class="features">
+      <div class="card">
+        <div class="ico">🌗</div>
+        <h3>Adaptive sessions</h3>
+        <p>Lumen watches when you naturally drift and adjusts your blocks — longer when you're flowing, shorter when you're fading.</p>
+      </div>
+      <div class="card">
+        <div class="ico">🔕</div>
+        <h3>Quiet by default</h3>
+        <p>No streaks to protect, no badges to chase. Just a calm space that gets out of your way so the work can happen.</p>
+      </div>
+      <div class="card">
+        <div class="ico">📊</div>
+        <h3>Honest insights</h3>
+        <p>A simple weekly view of where your attention actually went — the kind of number you can act on, not just admire.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta-band" id="start">
+    <h2>Reclaim your best hours.</h2>
+    <a href="#" class="btn btn-dark">Get Lumen — free for 14 days</a>
+  </div>
+
+  <footer>
+    <span>© 2025 Lumen. A demo project by StacklaneUAE.</span>
+    <span><a href="https://github.com/StacklaneUAE">github.com/StacklaneUAE</a></span>
+  </footer>
+</div>
+</body>
+</html>
